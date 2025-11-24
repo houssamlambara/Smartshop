@@ -1,6 +1,6 @@
 package com.houssam.smartShop.enums;
 
-public enum PaiementMethode {
+public enum PaiementMethod {
     ESPECE,
     CHEQUE,
     VIREMENT
