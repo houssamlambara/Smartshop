@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class Client {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String nom;
     private String prenom;

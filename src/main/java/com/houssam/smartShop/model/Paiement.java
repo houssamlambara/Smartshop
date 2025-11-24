@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class Paiement {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private Integer numeroPaiement;
     private BigDecimal montant;

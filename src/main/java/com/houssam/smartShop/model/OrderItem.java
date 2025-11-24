@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class OrderItem {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private Integer quantite;
     private BigDecimal prixUnitaire;

@@ -21,7 +21,7 @@ import java.util.List;
 public class PromoCode {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String code;
     private BigDecimal discountPercentage;

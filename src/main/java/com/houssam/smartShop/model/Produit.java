@@ -18,7 +18,7 @@ import java.util.List;
 public class Produit {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String nom;
     private String description;
