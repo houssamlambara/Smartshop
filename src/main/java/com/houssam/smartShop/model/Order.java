@@ -32,7 +32,7 @@ public class Order {
     private BigDecimal tauxTVA;
     private BigDecimal montantTVA;
     private BigDecimal totalTTC;
-    private String codePromo;
+//    private String codePromo;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus statut;
@@ -45,5 +45,9 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
+
+    @ManyToOne
+    @JoinColumn(name = "promo_code_id")
+    private PromoCode promoCode;
 
 }
