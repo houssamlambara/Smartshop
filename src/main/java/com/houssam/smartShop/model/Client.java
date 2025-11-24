@@ -3,6 +3,7 @@ package com.houssam.smartShop.model;
 import com.houssam.smartShop.enums.CustomerTier;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "clients")
+@Builder
 public class Client {
 
     @Id
