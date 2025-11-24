@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SmartShopApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SmartShopApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SmartShopApplication.class, args);
+    }
 
 }

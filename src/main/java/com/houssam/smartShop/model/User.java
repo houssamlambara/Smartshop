@@ -1,12 +1,11 @@
 package com.houssam.smartShop.model;
 
+import com.houssam.smartShop.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.management.relation.Role;
 
 @Data
 @Entity
@@ -25,7 +24,6 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
-
+    private UserRole role;
 
 }
