@@ -12,9 +12,14 @@ public interface ClientMapper {
     @Mapping(source = "user.id", target = "userId")
     ClientResponseDTO toResponse(Client client);
 
-    Client toEntity(ClientRequestDTO dto);
-
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateClientFromDto(ClientRequestDTO dto, @MappingTarget Client client);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "customerTier", ignore = true)
+    @Mapping(target = "totalOrders", ignore = true)
+    @Mapping(target = "totalSpent", ignore = true)
+    @Mapping(target = "firstOrderDate", ignore = true)
+    @Mapping(target = "lastOrderDate", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    void updateEntityFromDTO(ClientRequestDTO dto, @MappingTarget Client client);
 
 }
