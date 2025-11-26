@@ -1,0 +1,74 @@
+package com.houssam.smartShop.controller;
+
+import com.houssam.smartShop.dto.requestDTO.ProduitRequestDTO;
+import com.houssam.smartShop.dto.responseDTO.ProduitResponseDTO;
+import com.houssam.smartShop.enums.UserRole;
+import com.houssam.smartShop.response.ApiResponse;
+import com.houssam.smartShop.service.ProduitService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+
+@RestController
+@RequestMapping("/api/produit")
+@RequiredArgsConstructor
+public class ProduitController {
+
+    private final ProduitService produitService;
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<ProduitResponseDTO>> createProduit(@Valid @RequestBody ProduitRequestDTO dto, HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        UserRole role = (UserRole) session.getAttribute("role");
+        if (role == null || role != UserRole.ADMIN) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse<>("Acces refusé : ADMIN requis", null));
+        }
+        ProduitResponseDTO response = produitService.createProduit(dto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>("Produit créé avec succès", response));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<ProduitResponseDTO>> getProduitById(@PathVariable String id){
+        ProduitResponseDTO response = produitService.getProduitById(id);
+        return ResponseEntity.ok(new ApiResponse<>("Produit recupere avec succes", response));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<ProduitResponseDTO>>> getAllProduits(){
+        List<ProduitResponseDTO> response = produitService.getAllProduits();
+        return ResponseEntity.ok(new ApiResponse<>("Liste des produits", response));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ProduitResponseDTO>> updateProduit(@PathVariable String id, @Valid @RequestBody ProduitRequestDTO dto, HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        UserRole role = (UserRole) session.getAttribute("role");
+        if (role == null || role != UserRole.ADMIN) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse<>("Acces refusé : ADMIN requis", null));
+        }
+        ProduitResponseDTO response = produitService.updateProduit(id, dto);
+        return ResponseEntity.ok(new ApiResponse<>("Produit mis a jour avec succes",response));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteProduit(@PathVariable String id, HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        UserRole role = (UserRole) session.getAttribute("role");
+        if (role == null || role != UserRole.ADMIN) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse<>("Acces refusé : ADMIN requis", null));
+        }
+        produitService.deleteProduit(id);
+        return ResponseEntity.ok(new ApiResponse<>("Produit supprimé avec succès", null));
+    }
+}
