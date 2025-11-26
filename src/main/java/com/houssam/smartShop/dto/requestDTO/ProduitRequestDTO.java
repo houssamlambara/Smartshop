@@ -17,13 +17,11 @@ public class ProduitRequestDTO {
     @Size(min = 2, message = "Le nom du produit doit contenir au moins 2 caractères")
     private String nom;
 
-    private String description;
-
     @NotNull(message = "Le prix du produit est obligatoire")
     @Positive(message = "Le prix du produit doit être un nombre positif")
     private Double prixUnite;
 
-    @NotNull(message = "La stock est obligatoire")
+    @NotNull(message = "Le stock est obligatoire")
     @Positive(message = "Le stock doit être positif ou nul")
     private Integer stock;
 }

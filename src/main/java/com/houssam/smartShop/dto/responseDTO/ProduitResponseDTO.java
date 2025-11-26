@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 public class ProduitResponseDTO {
     private String id;
     private String nom;
-    private String description;
     private BigDecimal prixUnite;
     private Integer stock;
     private Boolean delete;
