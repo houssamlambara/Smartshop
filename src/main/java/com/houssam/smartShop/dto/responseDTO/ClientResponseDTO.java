@@ -18,7 +18,7 @@ public class ClientResponseDTO {
     private String email;
     private CustomerTier customerTier;
     private Integer totalOrders;
-    private BigDecimal totalSpent;
+    private Double totalSpent;
     private LocalDate firstOrderDate;
     private LocalDate lastOrderDate;
     private String userId;

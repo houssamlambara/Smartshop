@@ -16,7 +16,7 @@ public class PaiementResponseDTO {
 
     private String id;
     private Integer numeroPaiement;
-    private BigDecimal montant;
+    private Double montant;
     private PaiementMethod typePaiement;
     private PaiementStatus status;
     private LocalDateTime datePaiement;

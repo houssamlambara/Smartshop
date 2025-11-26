@@ -23,7 +23,7 @@ public class PaiementRequestDTO {
 
     @NotNull(message = "Le montant est obligatoire")
     @Min(value = 0, message = "Le montant doit être supérieur ou égal à 0")
-    private BigDecimal montant;
+    private Double montant;
 
     @NotNull(message = "Le type de paiement est obligatoire")
     private PaiementMethod typePaiement;

@@ -14,7 +14,7 @@ public class PromoCodeResponseDTO {
 
     private String id;
     private String code;
-    private BigDecimal discountPercentage;
+    private Double discountPercentage;
     private Boolean active;
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;

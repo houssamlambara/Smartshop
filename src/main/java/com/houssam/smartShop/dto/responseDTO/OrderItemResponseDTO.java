@@ -15,6 +15,6 @@ public class OrderItemResponseDTO {
     private String produitId;
     private String produitNom;
     private Integer quantite;
-    private BigDecimal prixUnitaire;
-    private BigDecimal total;
+    private Double prixUnitaire;
+    private Double total;
 }
