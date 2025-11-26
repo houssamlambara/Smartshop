@@ -8,6 +8,7 @@ import com.houssam.smartShop.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,22 +19,18 @@ public class AuthService {
 
     public LoginResponseDTO login(LoginRequestDTO request, HttpServletRequest httpRequest) {
 
-        // 1. Chercher l'utilisateur par username
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("Username ou mot de passe incorrect"));
 
-        // 2. Vérifier le mot de passe (simple comparaison pour le brief)
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!BCrypt.checkpw(request.getPassword(), user.getPassword())) {
             throw new ResourceNotFoundException("Username ou mot de passe incorrect");
         }
 
-        // 3. Créer la session HTTP
         HttpSession session = httpRequest.getSession(true);
         session.setAttribute("userId", user.getId());
         session.setAttribute("username", user.getUsername());
         session.setAttribute("role", user.getRole());
 
-        // 4. Retourner la réponse
         return LoginResponseDTO.builder()
                 .userId(user.getId())
                 .username(user.getUsername())

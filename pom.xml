@@ -58,6 +58,13 @@
 			<optional>true</optional>
 		</dependency>
 
+        <!-- Hash -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
 		<!-- MapStruct for DTO mapping -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>

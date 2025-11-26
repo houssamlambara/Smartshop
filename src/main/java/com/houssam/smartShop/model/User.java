@@ -26,7 +26,7 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne
     private Client client;
 
 }

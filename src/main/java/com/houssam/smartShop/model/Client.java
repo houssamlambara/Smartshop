@@ -31,7 +31,7 @@ public class Client {
     private LocalDate firstOrderDate;
     private LocalDate lastOrderDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval  = true)
     @JoinColumn(name = "user_id")
     private User user;
 }

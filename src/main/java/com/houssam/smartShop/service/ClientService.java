@@ -11,6 +11,7 @@ import com.houssam.smartShop.model.User;
 import com.houssam.smartShop.repository.ClientRepository;
 import com.houssam.smartShop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +29,11 @@ public class ClientService {
 
     @Transactional
     public ClientResponseDTO createClient(ClientRequestDTO dto){
+        String hashedPassword = BCrypt.hashpw(dto.getUser().getPassword(), BCrypt.gensalt());
+
         User user = User.builder()
                 .username(dto.getUser().getUsername())
-                .password(dto.getUser().getPassword())
+                .password(hashedPassword)
                 .role(UserRole.CLIENT)
                 .build();
         user = userRepository.save(user);
