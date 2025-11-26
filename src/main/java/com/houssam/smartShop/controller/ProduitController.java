@@ -4,7 +4,7 @@ import com.houssam.smartShop.dto.requestDTO.ProduitRequestDTO;
 import com.houssam.smartShop.dto.responseDTO.ProduitResponseDTO;
 import com.houssam.smartShop.enums.UserRole;
 import com.houssam.smartShop.response.ApiResponse;
-import com.houssam.smartShop.service.ProduitService;
+import com.houssam.smartShop.service.implementation.ProduitServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProduitController {
 
-    private final ProduitService produitService;
+    private final ProduitServiceImpl produitServiceImpl;
 
     @PostMapping
     public ResponseEntity<ApiResponse<ProduitResponseDTO>> createProduit(@Valid @RequestBody ProduitRequestDTO dto, HttpServletRequest request){
@@ -31,20 +31,20 @@ public class ProduitController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ApiResponse<>("Acces refusé : ADMIN requis", null));
         }
-        ProduitResponseDTO response = produitService.createProduit(dto);
+        ProduitResponseDTO response = produitServiceImpl.createProduit(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>("Produit créé avec succès", response));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ProduitResponseDTO>> getProduitById(@PathVariable String id){
-        ProduitResponseDTO response = produitService.getProduitById(id);
+        ProduitResponseDTO response = produitServiceImpl.getProduitById(id);
         return ResponseEntity.ok(new ApiResponse<>("Produit recupere avec succes", response));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProduitResponseDTO>>> getAllProduits(){
-        List<ProduitResponseDTO> response = produitService.getAllProduits();
+        List<ProduitResponseDTO> response = produitServiceImpl.getAllProduits();
         return ResponseEntity.ok(new ApiResponse<>("Liste des produits", response));
     }
 
@@ -56,7 +56,7 @@ public class ProduitController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ApiResponse<>("Acces refusé : ADMIN requis", null));
         }
-        ProduitResponseDTO response = produitService.updateProduit(id, dto);
+        ProduitResponseDTO response = produitServiceImpl.updateProduit(id, dto);
         return ResponseEntity.ok(new ApiResponse<>("Produit mis a jour avec succes",response));
     }
 
@@ -68,7 +68,7 @@ public class ProduitController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ApiResponse<>("Acces refusé : ADMIN requis", null));
         }
-        produitService.deleteProduit(id);
+        produitServiceImpl.deleteProduit(id);
         return ResponseEntity.ok(new ApiResponse<>("Produit supprimé avec succès", null));
     }
 }
