@@ -26,12 +26,12 @@ public class Order {
     private String id;
 
     private LocalDate dateCommande;
-    private BigDecimal sousTotal;
-    private BigDecimal montantRemise;
-    private BigDecimal montantHT;
-    private BigDecimal tauxTVA;
-    private BigDecimal montantTVA;
-    private BigDecimal totalTTC;
+    private Double sousTotal;
+    private Double montantRemise;
+    private Double montantHT;
+    private Double tauxTVA;
+    private Double montantTVA;
+    private Double totalTTC;
 //    private String codePromo;
 
     @Enumerated(EnumType.STRING)

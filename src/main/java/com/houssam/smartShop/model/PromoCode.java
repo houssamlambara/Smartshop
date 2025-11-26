@@ -24,7 +24,7 @@ public class PromoCode {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String code;
-    private BigDecimal discountPercentage;
+    private Double discountPercentage;
     private Boolean Active;
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;

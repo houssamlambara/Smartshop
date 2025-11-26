@@ -18,8 +18,8 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private Integer quantite;
-    private BigDecimal prixUnitaire;
-    private BigDecimal total;
+    private Double prixUnitaire;
+    private Double total;
 
     @ManyToOne
     @JoinColumn(name = "produit_id", nullable=false)

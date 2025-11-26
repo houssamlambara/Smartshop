@@ -24,7 +24,7 @@ public class Paiement {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private Integer numeroPaiement;
-    private BigDecimal montant;
+    private Double montant;
 
     @Enumerated(EnumType.STRING)
     private PaiementMethod typePaiement;

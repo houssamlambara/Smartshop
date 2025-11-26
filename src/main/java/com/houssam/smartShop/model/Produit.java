@@ -21,7 +21,7 @@ public class Produit {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String nom;
-    private BigDecimal prixUnite;
+    private Double prixUnite;
     private Integer stock;
     private Boolean delete = false;
 
