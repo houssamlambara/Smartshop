@@ -19,7 +19,7 @@ public class OrderRequestDTO {
     @NotBlank(message = "L'ID du client est obligatoire")
     private String clientId;
 
-    private String promoCodeId;
+    private String promoCode;
 
     @NotNull(message = "La date de la commande est obligatoire")
     private LocalDate dateCommande;
