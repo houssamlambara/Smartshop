@@ -41,7 +41,7 @@ public class ClientService {
                 .email(dto.getEmail())
                 .customerTier(CustomerTier.BASIC)
                 .totalOrders(0)
-                .totalSpent(BigDecimal.ZERO)
+                .totalSpent(0.0)
                 .user(user)
                 .build();
 
