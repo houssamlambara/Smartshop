@@ -72,14 +72,14 @@ public class OrderServiceImpl implements OrderService {
         }
 
         double remise = calculerFideliter(client, sousTotal);
-        if(dto.getPromoCode() != null && dto.getPromoCode().matches("PROMO\\d+")){
-            remise += sousTotal *0.5;
+        if (promoCode != null && promoCode.getActive()) {
+            remise += sousTotal * (promoCode.getDiscountPercentage() / 100);
         }
 
         double montantHT = sousTotal - remise;
-        double tauxTVA = montantHT * 0.20;
+        double tauxTVA = 0.20;
         double montantTVA = montantHT * tauxTVA;
-        double totalTTC = montantHT + tauxTVA;
+        double totalTTC = montantHT + montantTVA;
 
         order.setSousTotal(sousTotal);
         order.setMontantRemise(remise);
