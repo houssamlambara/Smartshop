@@ -3,6 +3,7 @@ package com.houssam.smartShop.service.implementation;
 import com.houssam.smartShop.dto.requestDTO.OrderItemRequestDTO;
 import com.houssam.smartShop.dto.requestDTO.OrderRequestDTO;
 import com.houssam.smartShop.dto.responseDTO.OrderResponseDTO;
+import com.houssam.smartShop.enums.CustomerTier;
 import com.houssam.smartShop.enums.OrderStatus;
 import com.houssam.smartShop.mapper.OrderItemMapper;
 import com.houssam.smartShop.mapper.OrderMapper;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponseDTO createOrder(OrderRequestDTO dto){
         Client client = clientRepository.findById(dto.getClientId())
                 .orElseThrow(()-> new RuntimeException("Client non trouvé"));
+
         PromoCode promoCode = null;
         if(dto.getPromoCode() != null && !dto.getPromoCode().isEmpty()) {
             promoCode = promoCodeRepository.findById(dto.getPromoCode()).orElse(null);
@@ -46,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
 
 //        order = orderRepository.save(order);
 
-        double sousTotal = 0.0;
+//        double sousTotal = 0.0;
         for (OrderItemRequestDTO itemDTO : dto.getItems()) {
             Produit produit = produitRepository.findById(itemDTO.getProduitId())
                     .orElseThrow(() -> new RuntimeException("Produit non trouvé"));
@@ -56,60 +59,99 @@ public class OrderServiceImpl implements OrderService {
                 throw new RuntimeException("Stock insuffisant pour le produit : " + produit.getNom());
             }
 
-            double prixUnitaire = produit.getPrixUnite();
-            double totalHT = prixUnitaire * itemDTO.getQuantite();
+//            double prixUnitaire = produit.getPrixUnite();
+//            double totalHT = prixUnitaire * itemDTO.getQuantite();
 
             OrderItem orderItem = OrderItem.builder()
                     .produit(produit)
                     .quantite(itemDTO.getQuantite())
-                    .prixUnitaire(prixUnitaire)
-                    .total(totalHT)
+                    .prixUnitaire(produit.getPrixUnite())
+                    .total(produit.getPrixUnite() * itemDTO.getQuantite())
                     .order(order)
                     .build();
 
             order.getItems().add(orderItem);
-            sousTotal += totalHT;
+//            sousTotal += totalHT;
         }
 
-        double remise = calculerFideliter(client, sousTotal);
-        if (promoCode != null && promoCode.getActive()) {
-            remise += sousTotal * (promoCode.getDiscountPercentage() / 100);
+//        double remise = calculerFideliter(client, sousTotal);
+//        if (promoCode != null && promoCode.getActive()) {
+//            remise += sousTotal * (promoCode.getDiscountPercentage() / 100);
+//        }
+//
+//        double montantHT = sousTotal - remise;
+//        double tauxTVA = 0.20;
+//        double montantTVA = montantHT * tauxTVA;
+//        double totalTTC = montantHT + montantTVA;
+
+        client.setCustomerTier(calculerNiveauFidelite(client));
+
+        calculerMontants(order, client, promoCode);
+
+        orderRepository.save(order);
+
+        double montantCommande = order.getMontantHT();
+        client.setTotalOrders(client.getTotalOrders()+1);
+        client.setTotalSpent((client.getTotalSpent() != null ? client.getTotalSpent() : 0) + montantCommande);
+        client.setCustomerTier(calculerNiveauFidelite(client));
+
+        return orderMapper.toResponse(order);
+    }
+
+    private CustomerTier calculerNiveauFidelite(Client client) {
+        int totalCommandes = client.getTotalOrders();
+        double totalCumul = client.getTotalSpent();
+
+        if (totalCommandes >= 20 || totalCumul >= 15000) {
+            return CustomerTier.PLATINIUM;
+        } else if (totalCommandes >= 10 || totalCumul >= 5000) {
+            return CustomerTier.GOLD;
+        } else if (totalCommandes >= 3 || totalCumul >= 1000) {
+            return CustomerTier.SILVER;
+        } else {
+            return CustomerTier.BASIC;
+        }
+    }
+
+    private double calculerFideliter(Client client, double sousTotal) {
+        if (client.getCustomerTier() == null) return 0.0;
+
+        return switch (client.getCustomerTier()) {
+            case SILVER -> sousTotal >= 500 ? sousTotal * 0.05 : 0.0;
+            case GOLD -> sousTotal >= 800 ? sousTotal * 0.10 : 0.0;
+            case PLATINIUM -> sousTotal >= 1200 ? sousTotal * 0.15 : 0.0;
+            default -> 0.0;
+        };
+    }
+
+    private void calculerMontants(Order order, Client client, PromoCode promoCode){
+        double sousTotal = 0.0;
+        for(OrderItem item : order.getItems()){
+            sousTotal += item.getTotal();
         }
 
-        double montantHT = sousTotal - remise;
+        double remiseFidelite = calculerFideliter(client, sousTotal);
+
+        double remisePromo = 0.0;
+        if(promoCode != null && Boolean.TRUE.equals(promoCode.getActive())
+                && (promoCode.getDateDebut() == null || promoCode.getDateDebut().isBefore(LocalDateTime.now()))
+                && (promoCode.getDateFin() == null || promoCode.getDateFin().isAfter(LocalDateTime.now()))) {
+            remisePromo = sousTotal * (promoCode.getDiscountPercentage() / 100);
+        }
+
+        double totalRemise = remiseFidelite + remisePromo;
+
+        double montantHT = sousTotal - totalRemise;
         double tauxTVA = 0.20;
         double montantTVA = montantHT * tauxTVA;
         double totalTTC = montantHT + montantTVA;
 
         order.setSousTotal(sousTotal);
-        order.setMontantRemise(remise);
+        order.setMontantRemise(totalRemise);
         order.setMontantHT(montantHT);
-        order.setMontantTVA(montantTVA);
-//        order.setMontantTVA(order.getMontantTVA());
         order.setTauxTVA(tauxTVA);
+        order.setMontantTVA(montantTVA);
         order.setTotalTTC(totalTTC);
-        orderRepository.save(order);
-
-        client.setTotalOrders(client.getTotalOrders()+1);
-
-        return orderMapper.toResponse(order);
-    }
-
-    private double calculerFideliter(Client client, double sousTotal){
-        switch (client.getCustomerTier()){
-            case SILVER -> {
-                return sousTotal > 500 ? sousTotal * 0.05 :0.0;
-            }
-            case GOLD -> {
-                return sousTotal > 800 ? sousTotal * 0.10 : 0.0;
-            }
-            case PLATINIUM -> {
-                return sousTotal >=1200 ? sousTotal * 0.15 : 0.0;
-            }
-            default -> {
-                return 0.0;
-            }
-        }
     }
 
     public OrderResponseDTO getOrderById(String id){
