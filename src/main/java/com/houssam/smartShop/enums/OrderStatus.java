@@ -4,5 +4,5 @@ public enum OrderStatus {
     EN_ATTENTE,
     CONFIRME,
     ANNULE,
-    REJETE,
+    REJETE
 }
