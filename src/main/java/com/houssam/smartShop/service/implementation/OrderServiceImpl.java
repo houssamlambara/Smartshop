@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
 
         PromoCode promoCode = null;
         if(dto.getPromoCode() != null && !dto.getPromoCode().isEmpty()) {
-            promoCode = promoCodeRepository.findById(dto.getPromoCode()).orElse(null);
+            promoCode = promoCodeRepository.findByCode(dto.getPromoCode()).orElse(null);
         }
 
         Order order = orderMapper.toEntity(dto);
@@ -49,7 +49,6 @@ public class OrderServiceImpl implements OrderService {
 
 //        order = orderRepository.save(order);
 
-//        double sousTotal = 0.0;
         for (OrderItemRequestDTO itemDTO : dto.getItems()) {
             Produit produit = produitRepository.findById(itemDTO.getProduitId())
                     .orElseThrow(() -> new RuntimeException("Produit non trouvé"));
@@ -58,9 +57,6 @@ public class OrderServiceImpl implements OrderService {
                 order.setStatut(OrderStatus.REJETE);
                 throw new RuntimeException("Stock insuffisant pour le produit : " + produit.getNom());
             }
-
-//            double prixUnitaire = produit.getPrixUnite();
-//            double totalHT = prixUnitaire * itemDTO.getQuantite();
 
             OrderItem orderItem = OrderItem.builder()
                     .produit(produit)
@@ -74,17 +70,7 @@ public class OrderServiceImpl implements OrderService {
 //            sousTotal += totalHT;
         }
 
-//        double remise = calculerFideliter(client, sousTotal);
-//        if (promoCode != null && promoCode.getActive()) {
-//            remise += sousTotal * (promoCode.getDiscountPercentage() / 100);
-//        }
-//
-//        double montantHT = sousTotal - remise;
-//        double tauxTVA = 0.20;
-//        double montantTVA = montantHT * tauxTVA;
-//        double totalTTC = montantHT + montantTVA;
-
-        client.setCustomerTier(calculerNiveauFidelite(client));
+//        client.setCustomerTier(calculerNiveauFidelite(client));
 
         calculerMontants(order, client, promoCode);
 
@@ -94,6 +80,8 @@ public class OrderServiceImpl implements OrderService {
         client.setTotalOrders(client.getTotalOrders()+1);
         client.setTotalSpent((client.getTotalSpent() != null ? client.getTotalSpent() : 0) + montantCommande);
         client.setCustomerTier(calculerNiveauFidelite(client));
+
+        clientRepository.save(client);
 
         return orderMapper.toResponse(order);
     }
