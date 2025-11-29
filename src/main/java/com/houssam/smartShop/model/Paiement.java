@@ -28,6 +28,7 @@ public class Paiement {
 
     @Enumerated(EnumType.STRING)
     private PaiementMethod typePaiement;
+
     @Enumerated(EnumType.STRING)
     private PaiementStatus status;
 
