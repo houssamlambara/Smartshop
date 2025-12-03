@@ -18,7 +18,12 @@ public class PaiementResponseDTO {
     private Integer numeroPaiement;
     private Double montant;
     private PaiementMethod typePaiement;
+    private String reference;
+    private String banque;
     private PaiementStatus status;
+    private LocalDateTime dateEcheance;
+    private LocalDateTime dateEncaissement;
     private LocalDateTime datePaiement;
     private LocalDateTime createdAt;
-    private String orderId;}
+    private String orderId;
+}

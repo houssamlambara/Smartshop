@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PaiementRequestDTO {
 
-    @NotNull(message = "Le mode de paiement est obligatoire")
-    private String modePaiement;
+//    @NotNull(message = "Le mode de paiement est obligatoire")
+//    private String modePaiement;
 
     @NotNull(message = "Le montant est obligatoire")
     @Min(value = 0, message = "Le montant doit être supérieur ou égal à 0")
@@ -27,8 +27,12 @@ public class PaiementRequestDTO {
     @NotNull(message = "Le type de paiement est obligatoire")
     private PaiementMethod typePaiement;
 
-    @NotNull(message = "Le statut du paiement est obligatoire")
-    private PaiementStatus status;
+//    @NotNull(message = "Le statut du paiement est obligatoire")
+//    private PaiementStatus status;
+
+    private String reference;
+    private String banque;
+    private LocalDateTime dateEcheance;
 
 //    @NotNull(message = "La date de paiement est obligatoire")
 //    private LocalDateTime datePaiement;

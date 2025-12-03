@@ -34,6 +34,7 @@ public class Order {
     private Double tauxTVA;
     private Double montantTVA;
     private Double totalTTC;
+    private Double montantRestant;
 //    private String codePromo;
 
     @Enumerated(EnumType.STRING)

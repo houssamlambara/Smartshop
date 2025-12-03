@@ -23,6 +23,7 @@ public class OrderResponseDTO {
     private Double tauxTVA;
     private Double montantTVA;
     private Double totalTTC;
+    private Double montantRestant;
     private OrderStatus statut;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

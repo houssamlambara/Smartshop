@@ -33,9 +33,10 @@ public class Paiement {
     private PaiementStatus status;
 
     private LocalDateTime datePaiement;
-//    private String reference;
-//    private String banque;
-//    private LocalDateTime dateEcheance;
+    private String reference;
+    private String banque;
+    private LocalDateTime dateEncaissement;
+    private LocalDateTime dateEcheance;
 //    private String commentaire;
 
     @CreationTimestamp
