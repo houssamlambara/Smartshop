@@ -2,6 +2,7 @@ package com.houssam.smartShop.controller;
 
 import com.houssam.smartShop.dto.requestDTO.ClientRequestDTO;
 import com.houssam.smartShop.dto.responseDTO.ClientResponseDTO;
+import com.houssam.smartShop.dto.responseDTO.OrderResponseDTO;
 import com.houssam.smartShop.response.ApiResponse;
 import com.houssam.smartShop.service.implementation.ClientServiceImpl;
 import jakarta.validation.Valid;
@@ -47,6 +48,12 @@ public class ClientController {
     public ResponseEntity<ApiResponse<Void>> deleteClient(@PathVariable String id){
         clientServiceImpl.deleteClient(id);
         return ResponseEntity.ok (new ApiResponse<>("Client supprime avec succes", null));
+    }
+
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<ApiResponse<List<OrderResponseDTO>>> getClientOrders(@PathVariable String id){
+        List<OrderResponseDTO> orders = clientServiceImpl.getClientOrders(id);
+        return ResponseEntity.ok(new ApiResponse<>("Liste des commandes du client", orders));
     }
 
 }

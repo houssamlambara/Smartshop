@@ -2,13 +2,17 @@ package com.houssam.smartShop.service.implementation;
 
 import com.houssam.smartShop.dto.requestDTO.ClientRequestDTO;
 import com.houssam.smartShop.dto.responseDTO.ClientResponseDTO;
+import com.houssam.smartShop.dto.responseDTO.OrderResponseDTO;
 import com.houssam.smartShop.enums.CustomerTier;
 import com.houssam.smartShop.enums.UserRole;
 import com.houssam.smartShop.exception.ResourceNotFoundException;
 import com.houssam.smartShop.mapper.ClientMapper;
+import com.houssam.smartShop.mapper.OrderMapper;
 import com.houssam.smartShop.model.Client;
+import com.houssam.smartShop.model.Order;
 import com.houssam.smartShop.model.User;
 import com.houssam.smartShop.repository.ClientRepository;
+import com.houssam.smartShop.repository.OrderRepository;
 import com.houssam.smartShop.repository.UserRepository;
 import com.houssam.smartShop.service.ClientService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,8 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
     private final ClientMapper clientMapper;
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
     @Transactional
     public ClientResponseDTO createClient(ClientRequestDTO dto){
@@ -71,7 +77,6 @@ public class ClientServiceImpl implements ClientService {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Client non trouvé"));
 
-        // Mettre à jour
         clientMapper.updateEntityFromDTO(dto, client);
         client = clientRepository.save(client);
 
@@ -84,6 +89,17 @@ public class ClientServiceImpl implements ClientService {
         Client client = clientRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Client non trouvé avec ID:"+id));
         clientRepository.delete(client);
+    }
+
+    public List<OrderResponseDTO> getClientOrders(String clientId) {
+        clientRepository.findById(clientId)
+                .orElseThrow(() -> new ResourceNotFoundException("Client non trouvé avec ID : " + clientId));
+
+        List<Order> orders = orderRepository.findByClientId(clientId);
+
+        return orders.stream()
+                .map(orderMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
 }
