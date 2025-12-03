@@ -73,16 +73,8 @@ public class OrderServiceImpl implements OrderService {
 //        client.setCustomerTier(calculerNiveauFidelite(client));
 
         calculerMontants(order, client, promoCode);
-
+        order.setMontantRestant(order.getTotalTTC());
         orderRepository.save(order);
-
-        double montantCommande = order.getMontantHT();
-        client.setTotalOrders(client.getTotalOrders()+1);
-        client.setTotalSpent((client.getTotalSpent() != null ? client.getTotalSpent() : 0) + montantCommande);
-        client.setCustomerTier(calculerNiveauFidelite(client));
-
-        clientRepository.save(client);
-
         return orderMapper.toResponse(order);
     }
 
@@ -177,6 +169,60 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(()-> new RuntimeException("Commande non trouvé"));
         order.setStatut(status);
         orderRepository.save(order);
+    }
+
+    @Transactional
+    public OrderResponseDTO confirmOrder(String orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Commande non trouvée avec ID : " + orderId));
+
+        if (order.getStatut() != OrderStatus.EN_ATTENTE) {
+            throw new RuntimeException("Impossible de confirmer : la commande n'est pas en attente (statut actuel : " + order.getStatut() + ")");
+        }
+
+        if (order.getMontantRestant() == null || order.getMontantRestant() > 0) {
+            throw new RuntimeException(String.format(
+                "Impossible de confirmer : la commande n'est pas totalement payée (reste %.2f DH à payer)",
+                order.getMontantRestant() != null ? order.getMontantRestant() : order.getTotalTTC()
+            ));
+        }
+
+        for (OrderItem item : order.getItems()) {
+            Produit produit = item.getProduit();
+
+            if (produit.getStock() < item.getQuantite()) {
+                order.setStatut(OrderStatus.REJETE);
+                orderRepository.save(order);
+                throw new RuntimeException(String.format(
+                    "Stock insuffisant pour le produit '%s' : disponible=%d, demandé=%d",
+                    produit.getNom(), produit.getStock(), item.getQuantite()
+                ));
+            }
+
+            produit.setStock(produit.getStock() - item.getQuantite());
+            produitRepository.save(produit);
+        }
+
+        Client client = order.getClient();
+
+        client.setTotalOrders(client.getTotalOrders() + 1);
+
+        double montantCommande = order.getTotalTTC();
+        client.setTotalSpent((client.getTotalSpent() != null ? client.getTotalSpent() : 0.0) + montantCommande);
+
+        LocalDate today = LocalDate.now();
+
+        if (client.getFirstOrderDate() == null) {
+            client.setFirstOrderDate(today);
+        }
+
+        client.setLastOrderDate(today);
+        client.setCustomerTier(calculerNiveauFidelite(client));
+        clientRepository.save(client);
+        order.setStatut(OrderStatus.CONFIRME);
+        orderRepository.save(order);
+
+        return orderMapper.toResponse(order);
     }
 
 }

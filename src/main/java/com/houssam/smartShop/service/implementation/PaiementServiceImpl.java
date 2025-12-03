@@ -42,7 +42,7 @@ public class PaiementServiceImpl implements PaiementService {
         }
 
         if(dto.getTypePaiement() == PaiementMethod.ESPECE && dto.getMontant() > 20000){
-            throw new RuntimeException("Limite légale dépassée : paiement en espèces limité à 20,000 DH (Art. 193 CGI)");
+            throw new RuntimeException("Limite légale dépassée : paiement en espèces limité à 20,000 DH");
         }
 
         List<Paiement> paiementsExistants = paiementRepository.findByOrderId(dto.getOrderId());
@@ -61,7 +61,7 @@ public class PaiementServiceImpl implements PaiementService {
 
         if (dto.getTypePaiement() == PaiementMethod.CHEQUE) {
             if (dto.getReference() == null || dto.getReference().trim().isEmpty()) {
-                throw new RuntimeException("Le numéro de chèque (reference) est obligatoire pour un paiement par CHEQUE");
+                throw new RuntimeException("Le numéro de chèque est obligatoire pour un paiement par CHEQUE");
             }
             if (dto.getBanque() == null || dto.getBanque().trim().isEmpty()) {
                 throw new RuntimeException("La banque est obligatoire pour un paiement par CHEQUE");
@@ -87,7 +87,7 @@ public class PaiementServiceImpl implements PaiementService {
 
         if (dto.getTypePaiement() == PaiementMethod.ESPECE){
             paiement.setStatus(PaiementStatus.ENCAISSE);
-            paiement.setDateEncaissement(LocalDateTime.now()); // Encaissement immédiat pour les espèces
+            paiement.setDateEncaissement(LocalDateTime.now());
         } else {
             paiement.setStatus(PaiementStatus.EN_ATTENTE);
         }
@@ -96,7 +96,7 @@ public class PaiementServiceImpl implements PaiementService {
 
         if (paiement.getStatus() == PaiementStatus.ENCAISSE) {
             double nouveauMontantRestant = order.getMontantRestant() - dto.getMontant();
-            order.setMontantRestant(Math.max(0, nouveauMontantRestant)); // Éviter les valeurs négatives
+            order.setMontantRestant(Math.max(0, nouveauMontantRestant));
             orderRepository.save(order);
         }
 
@@ -125,7 +125,7 @@ public class PaiementServiceImpl implements PaiementService {
         paiementRepository.save(paiement);
         Order order = paiement.getOrder();
         double nouveauMontantRestant = order.getMontantRestant() - paiement.getMontant();
-        order.setMontantRestant(Math.max(0, nouveauMontantRestant)); // Éviter les valeurs négatives
+        order.setMontantRestant(Math.max(0, nouveauMontantRestant));
         orderRepository.save(order);
 
         return paiementMapper.toResponse(paiement);

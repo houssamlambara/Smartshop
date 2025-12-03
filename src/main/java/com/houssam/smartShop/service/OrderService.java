@@ -20,4 +20,6 @@ public interface OrderService {
 
     void updateOrderStatus(String id, OrderStatus status);
 
-    }
+    OrderResponseDTO confirmOrder(String orderId);
+
+}

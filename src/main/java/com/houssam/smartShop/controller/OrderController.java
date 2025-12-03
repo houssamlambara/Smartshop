@@ -55,4 +55,10 @@ public class OrderController {
         orderService.cancelOrder(id);
         return ResponseEntity.ok(new ApiResponse<>("Commande annulée avec succès", null));
     }
+
+    @PatchMapping("/{id}/confirm")
+    public ResponseEntity<ApiResponse<OrderResponseDTO>> confirmOrder(@PathVariable String id) {
+        OrderResponseDTO order = orderService.confirmOrder(id);
+        return ResponseEntity.ok(new ApiResponse<>("Commande confirmée avec succès", order));
+    }
 }
