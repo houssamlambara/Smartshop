@@ -2,14 +2,12 @@ package com.houssam.smartShop.dto.requestDTO;
 
 
 import com.houssam.smartShop.enums.PaiementMethod;
-import com.houssam.smartShop.enums.PaiementStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
