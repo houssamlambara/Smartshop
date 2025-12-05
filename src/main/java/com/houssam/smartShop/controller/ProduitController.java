@@ -15,15 +15,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@RequestMapping("/api") // préfixe commun
 @RestController
-@RequestMapping("/api/produit")
 @RequiredArgsConstructor
 public class ProduitController {
 
     private final ProduitServiceImpl produitServiceImpl;
 
-    @PostMapping
+    @PostMapping("/admin/produits")
     public ResponseEntity<ApiResponse<ProduitResponseDTO>> createProduit(@Valid @RequestBody ProduitRequestDTO dto, HttpServletRequest request){
         HttpSession session = request.getSession(false);
         UserRole role = (UserRole) session.getAttribute("role");
@@ -36,19 +35,19 @@ public class ProduitController {
                 .body(new ApiResponse<>("Produit créé avec succès", response));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/client/produits/{id}")
     public ResponseEntity<ApiResponse<ProduitResponseDTO>> getProduitById(@PathVariable String id){
         ProduitResponseDTO response = produitServiceImpl.getProduitById(id);
         return ResponseEntity.ok(new ApiResponse<>("Produit recupere avec succes", response));
     }
 
-    @GetMapping
+    @GetMapping("/client/produits")
     public ResponseEntity<ApiResponse<List<ProduitResponseDTO>>> getAllProduits(){
         List<ProduitResponseDTO> response = produitServiceImpl.getAllProduits();
         return ResponseEntity.ok(new ApiResponse<>("Liste des produits", response));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/admin/produits/{id}")
     public ResponseEntity<ApiResponse<ProduitResponseDTO>> updateProduit(@PathVariable String id, @Valid @RequestBody ProduitRequestDTO dto, HttpServletRequest request){
         HttpSession session = request.getSession(false);
         UserRole role = (UserRole) session.getAttribute("role");
@@ -60,7 +59,7 @@ public class ProduitController {
         return ResponseEntity.ok(new ApiResponse<>("Produit mis a jour avec succes",response));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/produits/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteProduit(@PathVariable String id, HttpServletRequest request){
         HttpSession session = request.getSession(false);
         UserRole role = (UserRole) session.getAttribute("role");

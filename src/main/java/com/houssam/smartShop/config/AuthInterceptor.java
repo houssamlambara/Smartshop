@@ -39,20 +39,12 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     private boolean hasAccess(HttpServletRequest request, UserRole userRole) {
-        if (userRole == UserRole.ADMIN) {
-            return true;
-        }
+        String uri = request.getRequestURI();
 
-        if (userRole == UserRole.CLIENT) {
-            String uri = request.getRequestURI();
-            String method = request.getMethod();
-
-            if (uri.contains("/confirm")) return false;
-            if (uri.startsWith("/api/paiements")) return false;
-            if (uri.equals("/api/clients") && method.equals("GET")) return false;
-            if (uri.equals("/api/orders") && method.equals("GET")) return false;
-            return true;
-        }
-        return false;
+        return switch (userRole) {
+            case ADMIN -> true;
+            case CLIENT -> !uri.startsWith("/api/admin");
+            default -> false;
+        };
     }
 }

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/api/admin/clients")  // Préfixe commun pour ADMIN
 @RestController
-@RequestMapping("/api/clients")
 @RequiredArgsConstructor
 public class ClientController {
 

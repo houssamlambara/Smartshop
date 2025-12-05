@@ -5,6 +5,7 @@ import com.houssam.smartShop.dto.responseDTO.OrderResponseDTO;
 import com.houssam.smartShop.enums.OrderStatus;
 import com.houssam.smartShop.response.ApiResponse;
 import com.houssam.smartShop.service.OrderService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,52 +14,53 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/api") // préfixe commun
 @RestController
-@RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
 
-    @PostMapping
+    @PostMapping("/orders")
     public ResponseEntity<ApiResponse<OrderResponseDTO>> createOrder(@Valid @RequestBody OrderRequestDTO dto) {
         OrderResponseDTO order = orderService.createOrder(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>("Commande créée avec succès", order));
     }
 
-    @GetMapping
+    @GetMapping("/admin/orders")
     public ResponseEntity<ApiResponse<List<OrderResponseDTO>>> getAllOrders(){
     List<OrderResponseDTO> orders = orderService.getAllOrders();
     return ResponseEntity.ok(new ApiResponse<>("Liste des commandes récupérée avec succès", orders));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/admin/orders/{id}")
     public ResponseEntity<ApiResponse<OrderResponseDTO>> getOrderById(@PathVariable String id){
         OrderResponseDTO order = orderService.getOrderById(id);
         return ResponseEntity.ok(new ApiResponse<>("Commande récupérée avec succès", order));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/admin/orders/{id}")
     public ResponseEntity<ApiResponse<OrderResponseDTO>> updateOrder(@PathVariable String id, @Valid @RequestBody OrderRequestDTO dto){
         OrderResponseDTO order = orderService.updateOrder(id, dto);
         return ResponseEntity.ok(new ApiResponse<>("Commande mise à jour avec succès", order));
     }
 
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/admin/orders/{id}/status")
     public ResponseEntity<ApiResponse<OrderResponseDTO>> updateOrderStatus(@PathVariable String id, @RequestParam OrderStatus status){
         orderService.updateOrderStatus(id,status);
         return ResponseEntity.ok(new ApiResponse<>("Statut de la commande mis à jour avec succès", null));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/orders/{id}/cancel")
     public ResponseEntity<ApiResponse<Void>> cancelOrder(@PathVariable String id){
         orderService.cancelOrder(id);
         return ResponseEntity.ok(new ApiResponse<>("Commande annulée avec succès", null));
     }
 
-    @PatchMapping("/{id}/confirm")
+    @PatchMapping("/admin/orders/{id}/confirm")
     public ResponseEntity<ApiResponse<OrderResponseDTO>> confirmOrder(@PathVariable String id) {
         OrderResponseDTO order = orderService.confirmOrder(id);
         return ResponseEntity.ok(new ApiResponse<>("Commande confirmée avec succès", order));
     }
+
 }
