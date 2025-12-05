@@ -15,6 +15,7 @@ import com.houssam.smartShop.repository.ClientRepository;
 import com.houssam.smartShop.repository.OrderRepository;
 import com.houssam.smartShop.repository.UserRepository;
 import com.houssam.smartShop.service.ClientService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -100,6 +101,37 @@ public class ClientServiceImpl implements ClientService {
         return orders.stream()
                 .map(orderMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    private Client getClientFromSession(HttpSession session){
+        String userId = (String) session.getAttribute("userId");
+        if(userId == null){
+            throw new RuntimeException("Utilisateur non connecté");
+        }
+        return clientRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Client non trouvé"));
+    }
+
+    @Override
+    public ClientResponseDTO getMyProfile(HttpSession session){
+        Client client = getClientFromSession(session);
+        return clientMapper.toResponse(client);
+    }
+
+    @Transactional
+    @Override
+    public ClientResponseDTO updateMyProfile(ClientRequestDTO dto, HttpSession session){
+        Client client = getClientFromSession(session);
+        clientMapper.updateEntityFromDTO(dto, client);
+        client = clientRepository.save(client);
+        return clientMapper.toResponse(client);
+    }
+
+    @Override
+    public List<OrderResponseDTO> getMyOrders(HttpSession session){
+        Client client = getClientFromSession(session);
+        List<Order> orders = orderRepository.findByClientId(client.getId());
+        return orders.stream().map(orderMapper::toResponse).collect(Collectors.toList());
     }
 
 }
