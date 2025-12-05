@@ -8,6 +8,7 @@ import com.houssam.smartShop.service.implementation.ClientServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +30,10 @@ public class ClientController {
     }
 
     @GetMapping("/admin/clients")
-    public ResponseEntity<ApiResponse<List<ClientResponseDTO>>> getAllClients(){
-        List<ClientResponseDTO> clients = clientServiceImpl.getAllClients();
+    public ResponseEntity<ApiResponse<Page<ClientResponseDTO>>> getAllClients(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size){
+        Page<ClientResponseDTO> clients = clientServiceImpl.getAllClients(page, size);
         return ResponseEntity.ok(new ApiResponse<>("Liste des clients", clients));
     }
 

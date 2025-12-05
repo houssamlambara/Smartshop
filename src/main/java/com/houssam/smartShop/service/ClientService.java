@@ -4,6 +4,7 @@ import com.houssam.smartShop.dto.requestDTO.ClientRequestDTO;
 import com.houssam.smartShop.dto.responseDTO.ClientResponseDTO;
 import com.houssam.smartShop.dto.responseDTO.OrderResponseDTO;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface ClientService {
 
     ClientResponseDTO getClientById(String id);
 
-    List<ClientResponseDTO> getAllClients();
+    Page<ClientResponseDTO> getAllClients(int page, int size);
 
     ClientResponseDTO updateClient(String id, ClientRequestDTO dto);
 

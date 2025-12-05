@@ -18,6 +18,9 @@ import com.houssam.smartShop.service.ClientService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,11 +69,11 @@ public class ClientServiceImpl implements ClientService {
     return clientMapper.toResponse(client);
     }
 
-    public List<ClientResponseDTO> getAllClients(){
-        return clientRepository.findAll()
-                .stream()
-                .map(clientMapper::toResponse)
-                .collect(Collectors.toList());
+    @Override
+    public Page<ClientResponseDTO> getAllClients(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Client> clientsPage = clientRepository.findAll(pageable);
+        return clientsPage.map(clientMapper::toResponse);
     }
 
     @Transactional
