@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -21,7 +22,7 @@ public class PaiementResponseDTO {
     private String reference;
     private String banque;
     private PaiementStatus status;
-    private LocalDateTime dateEcheance;
+    private LocalDate dateEcheance;
     private LocalDateTime dateEncaissement;
     private LocalDateTime datePaiement;
     private LocalDateTime createdAt;

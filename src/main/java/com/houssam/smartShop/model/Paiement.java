@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -36,7 +37,7 @@ public class Paiement {
     private String reference;
     private String banque;
     private LocalDateTime dateEncaissement;
-    private LocalDateTime dateEcheance;
+    private LocalDate dateEcheance;
 //    private String commentaire;
 
     @CreationTimestamp

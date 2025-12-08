@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -30,7 +31,7 @@ public class PaiementRequestDTO {
 
     private String reference;
     private String banque;
-    private LocalDateTime dateEcheance;
+    private LocalDate dateEcheance;
 
 //    @NotNull(message = "La date de paiement est obligatoire")
 //    private LocalDateTime datePaiement;
