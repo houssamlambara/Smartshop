@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -101,7 +102,7 @@ class PaiementServiceTest {
     void addPaiement_ShouldSetEnAttente_ForCheque() {
         requestDTO.setTypePaiement(PaiementMethod.CHEQUE);
         requestDTO.setBanque("BanqueTest");
-        requestDTO.setDateEcheance(LocalDateTime.now().plusDays(30)); // ⚡ ajout de la date d'échéance
+        requestDTO.setDateEcheance(LocalDate.now().plusDays(30)); // ⚡ ajout de la date d'échéance
 
         paiement.setTypePaiement(PaiementMethod.CHEQUE);
         paiement.setStatus(PaiementStatus.EN_ATTENTE);
