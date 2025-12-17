@@ -21,20 +21,20 @@ public class ProduitServiceImpl implements ProduitService {
     private final ProduitMapper produitMapper;
 
     @Transactional
-    public ProduitResponseDTO createProduit(ProduitRequestDTO dto){
+    public ProduitResponseDTO createProduit(ProduitRequestDTO dto) {
         Produit produit = produitMapper.toEntity(dto);
         produit.setDelete(false);
         produit = produitRepository.save(produit);
         return produitMapper.toResponse(produit);
     }
 
-    public ProduitResponseDTO getProduitById(String id){
+    public ProduitResponseDTO getProduitById(String id) {
         Produit produit = produitRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Produit non trouver avec ID:"+ id));
+                .orElseThrow(() -> new RuntimeException("Produit non trouver avec ID:" + id));
         return produitMapper.toResponse(produit);
     }
 
-    public List<ProduitResponseDTO> getAllProduits(){
+    public List<ProduitResponseDTO> getAllProduits() {
         return produitRepository.findAll()
                 .stream()
                 .filter(produit -> !produit.getDelete())
@@ -43,11 +43,11 @@ public class ProduitServiceImpl implements ProduitService {
     }
 
     @Transactional
-    public ProduitResponseDTO updateProduit(String id, ProduitRequestDTO dto){
+    public ProduitResponseDTO updateProduit(String id, ProduitRequestDTO dto) {
         Produit produit = produitRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Produit non trouver avec ce Id:" +id));
+                .orElseThrow(() -> new RuntimeException("Produit non trouver avec ce Id:" + id));
 
-        if (produit.getDelete()){
+        if (produit.getDelete()) {
             throw new RuntimeException("Impossible de modifier un produit supprimer");
         }
 
@@ -57,10 +57,19 @@ public class ProduitServiceImpl implements ProduitService {
     }
 
     @Transactional
-    public void deleteProduit(String id){
+    public void deleteProduit(String id) {
         Produit produit = produitRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Produit non trouver avec ce Id:" +id));
+                .orElseThrow(() -> new RuntimeException("Produit non trouver avec ce Id:" + id));
         produit.setDelete(true);
         produitRepository.save(produit);
     }
+
+    public List<ProduitResponseDTO> RuptureStock() {
+        return produitRepository.findAll()
+                .stream()
+                .filter(p -> p.getStock() <= 0 && p.getDelete() == false)
+                .map(produitMapper::toResponse)
+                .toList();
+    }
 }
+

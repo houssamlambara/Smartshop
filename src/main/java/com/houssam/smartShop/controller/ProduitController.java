@@ -5,6 +5,8 @@ import com.houssam.smartShop.dto.responseDTO.ProduitResponseDTO;
 import com.houssam.smartShop.enums.UserRole;
 import com.houssam.smartShop.response.ApiResponse;
 import com.houssam.smartShop.service.implementation.ProduitServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api") // préfixe commun
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Produits", description = "Gestion des produits du catalogue")
 public class ProduitController {
 
     private final ProduitServiceImpl produitServiceImpl;
@@ -59,6 +62,7 @@ public class ProduitController {
         return ResponseEntity.ok(new ApiResponse<>("Produit mis a jour avec succes",response));
     }
 
+    @Operation(summary = "Supprimer un produit", description = "Supprime un produit du catalogue (Admin uniquement)")
     @DeleteMapping("/admin/produits/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteProduit(@PathVariable String id, HttpServletRequest request){
         HttpSession session = request.getSession(false);

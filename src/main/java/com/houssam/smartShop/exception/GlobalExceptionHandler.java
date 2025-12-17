@@ -39,4 +39,3 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>("Erreur interne: " + ex.getMessage(), null));
     }
 }
-
